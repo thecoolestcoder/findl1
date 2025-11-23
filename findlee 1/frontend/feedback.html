@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Feedback | Findlee</title>
+    <link rel="stylesheet" href="/src/styles/tailwind.css" />
+  </head>
+  <body class="bg-gray-50 dark:bg-gray-900">
+    <div id="root"></div>
+
+<script>
+  // initialize EmailJS with your public key
+  (function(){
+    emailjs.init('oABM_wExV7L2hY2L_'); // <-- replace with your EmailJS public key
+  })();
+
+  // form handler
+  const form = document.getElementById('feedback-form');
+  const submitBtn = document.getElementById('submit-btn');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    // Build template parameters. These keys must match the variables in your EmailJS template.
+    const templateParams = {
+      from_name: form.from_name.value || 'Anonymous',
+      reply_to: form.reply_to.value || '',
+      category: form.category.value || '',
+      rating: form.rating ? form.rating.value : '',
+      message: form.message.value || '',
+      to_email: 'findly.web@gmail.com' // optional: if template expects it
+    };
+
+    emailjs.send('service_lwrtksi', 'template_6j1cz32', templateParams)
+      .then(function(response) {
+        console.log('SUCCESS!', response.status, response.text);
+        alert('Thanks — feedback sent!');
+        form.reset();
+      }, function(err) {
+        console.error('FAILED...', err);
+        alert('Could not send feedback. Please try again or use mailto:findly.web@gmail.com');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Feedback';
+      });
+  });
+</script>
+  </body>
+</html>
